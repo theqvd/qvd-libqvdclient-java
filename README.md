@@ -11,6 +11,18 @@ Prerequisites
 These prerequistes are needed to build this package:
 
  - libqvdclient-c
+ - Maven
+ - openjdk
+
+Testing
+=======
+
+export QVDTESTHOST=qvddemo.theqvd.com
+export QVDTESTUSER=myuser
+export QVDTESTPASS=mypass
+export ARGS4J=$HOME/.m2/repository/args4j/args4j/2.0.16/args4j-2.0.16.jar
+
+make test
 
 LICENSE
 =======
