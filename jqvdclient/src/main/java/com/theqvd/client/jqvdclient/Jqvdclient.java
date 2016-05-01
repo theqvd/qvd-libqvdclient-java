@@ -68,6 +68,8 @@ public class Jqvdclient {
     private String client_cert;
 	@Option(name="-k",usage="Client key file")
     private String client_key;
+	@Option(name="-s",handler=IntOptionHandler.class,usage="Select VM to connect")
+    private int preselectedvm = 0;
 	/**
 	 * @param args
 	 * @throws IOException 
@@ -166,7 +168,8 @@ public class Jqvdclient {
 		for (i = 0; i < vmlist.length; i ++) {
 			System.out.println("The vm is "+vmlist[i]);
 		}
-		int vmid = this.use_first_vm ? vmlist[0].getId() : choose_vm(vmlist) ;
+		int vmid = preselectedvm != 0 ? preselectedvm
+		    : (this.use_first_vm ? vmlist[0].getId() : choose_vm(vmlist) );
 		
 		if (list_vm_only) {
 			System.out.println("Not connecting to vm "+vmid+" because -l was specified in the command line");
