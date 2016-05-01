@@ -17,7 +17,7 @@ all: $(QVDCLIENTLIB)
 test: $(QVDCLIENTLIB)
 
 $(QVDCLIENTLIB): $(OBJ)
-	$(LD) -shared -o $(QVDCLIENTLIB) $(OBJ) $(QVDCLIENTLIBS)
+	$(LD) $(LDFLAGS) -shared -o $(QVDCLIENTLIB) $(OBJ) $(QVDCLIENTLIBS)
 
 install:
 

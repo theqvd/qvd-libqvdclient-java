@@ -8,7 +8,7 @@ Default: all
 all clean distclean test: $(SUBDIRS)
 	$(eval TARGET:=$@)
 	for i in $(SUBDIRS); do\
-	    $(MAKE) -C $$i $(TARGET) || exit 1;\
+	    $(MAKE) -e -C $$i $(TARGET) || exit 1;\
 	done
 
 .PHONY: all clean distclean
