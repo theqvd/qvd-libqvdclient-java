@@ -65,6 +65,10 @@ autom4te.cache
 
 # Java
 *.class
+*/target/
+
+# C
+*.o
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
