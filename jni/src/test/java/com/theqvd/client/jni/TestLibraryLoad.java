@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class TestLibraryLoad {
-	private String user, password, host;
+	private String user, password, host, bearer;
 	private int port;
 	@Before
 	public void setUp() throws Exception {
@@ -45,6 +45,7 @@ public class TestLibraryLoad {
 		port = Integer.parseInt(testprops.getProperty("test.port"));
 		user = testprops.getProperty("test.user");
 		password = testprops.getProperty("test.password");
+//		bearer = testprops.getProperty("test.bearer");
 	}
 
 	@Test
@@ -56,9 +57,9 @@ public class TestLibraryLoad {
 	@Test
 	public void testinitfree() throws QvdException {
 		QvdclientWrapper qvd = new QvdclientWrapper();
-		qvd.qvd_init(host, port, user, password);
+		qvd.qvd_init(host, port, user, password, bearer);
 		try {
-			qvd.qvd_init(host, port, user, password);
+			qvd.qvd_init(host, port, user, password, bearer);
 			fail("two consecutive calls to qvd_init fail");
 		} catch (QvdException e) {
 			assertTrue("Two consecutive qvd_init should fail", true);
@@ -74,7 +75,7 @@ public class TestLibraryLoad {
 
 		}
 		// Run another load
-		qvd.qvd_init(host, port, user, password);
+		qvd.qvd_init(host, port, user, password, bearer);
 		assertNotNull("qvd init worked", qvd.getQvdclient());
 		qvd.qvd_set_useragent("QVD/3.1 test useragent");
 		qvd.qvd_set_home("/tmp");

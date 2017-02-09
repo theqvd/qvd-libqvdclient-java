@@ -45,7 +45,9 @@ public class Jqvdclient {
 	@Option(name="-p",usage="Remote port")
     private int port = 8443;
 	@Option(name="-u",usage="username")
-	private String user;
+    private String user;
+	@Option(name="-b",usage="bearer, in this case the the VM must be provided with -s")
+    private String bearer;
 	@Option(name="-w",usage="password")
     private String password;
 	@Option(name="-W",handler=IntOptionHandler.class,usage="Width")
@@ -96,8 +98,12 @@ public class Jqvdclient {
             }
             // after parsing arguments, you should check
             // if enough arguments are given.
-            if(host == null || user == null || password == null || host.isEmpty() || user.isEmpty() || password.isEmpty() )
-                throw new CmdLineException(parser, "No argument is given");
+            if(host == null || host.isEmpty() )
+                throw new CmdLineException(parser, "No host argument has been passed, this parameter is mandatory");
+
+            if((user == null || password == null || user.isEmpty() || password.isEmpty()) && 
+                    (bearer == null || bearer.isEmpty()))
+                throw new CmdLineException(parser, "You need to specify either user and password or bearer");
 
         } catch( CmdLineException e ) {
             // if there's a problem in the command line,
@@ -129,7 +135,7 @@ public class Jqvdclient {
 		if (debug) {
 			q.qvd_set_debug();
 		}
-		q.qvd_init(host, port, user, password);
+		q.qvd_init(host, port, user, password, bearer);
 		if (width != -1 && height != -1) {
 			q.qvd_set_geometry(width, height);
 		}

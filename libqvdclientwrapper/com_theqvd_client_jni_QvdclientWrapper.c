@@ -20,7 +20,7 @@
 #include <stdlib.h>
 #include "com_theqvd_client_jni_QvdclientWrapper.h"
 
-static jfieldID qvdclient_fid, host_fid, port_fid, username_fid, password_fid,
+static jfieldID qvdclient_fid, host_fid, port_fid, username_fid, password_fid, bearer_fid,
   vm_id_fid, vm_name_fid, vm_state_fid, vm_blocked_fid, certificatehandler_fid, progresshandler_fid;
 static jmethodID vm_constructor_mid, certificate_verification_mid, print_progress_mid;
 static jclass qvdclientwrapper_cls, qvdclient_cls, vm_cls, vm_array_cls, qvdunknowncerthandler_cls,
@@ -123,6 +123,13 @@ int initIds(JNIEnv *env) {
    if (password_fid == NULL)
      {
        qvd_printf("Error finding field id for password in class Qvdclient");
+       return -1;
+     }
+
+   bearer_fid = (*env)->GetFieldID(env, qvdclient_cls, "bearer", "Ljava/lang/String;");
+   if (bearer_fid == NULL)
+     {
+       qvd_printf("Error finding field id for bearer in class Qvdclient");
        return -1;
      }
 
@@ -295,7 +302,7 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved)
 }
 
 
-inline jlong _set_c_pointer(qvdclient *qvd)
+jlong _set_c_pointer(qvdclient *qvd)
 {
   jlong qvd_c_pointer = 0L;
 #if UINTPTR_MAX == 0xffffffff
@@ -311,7 +318,7 @@ inline jlong _set_c_pointer(qvdclient *qvd)
   return qvd_c_pointer;
 }
 
-inline qvdclient *_set_qvdclient(jlong qvd_c_pointer)
+qvdclient *_set_qvdclient(jlong qvd_c_pointer)
 {
   qvdclient *qvd;
 
@@ -502,51 +509,87 @@ JNIEXPORT jint JNICALL Java_com_theqvd_client_jni_QvdclientWrapper_qvd_1c_1get_1
 
 /**
  * Initializes the qvdclient structure invoking qvd_init
- * The parameters host, port, username and password are fetched
+ * The parameters host, port, username, password and bearer are fetched
  * from the Java object passed
  */
 JNIEXPORT jlong JNICALL Java_com_theqvd_client_jni_QvdclientWrapper_qvd_1c_1init (JNIEnv *env, jobject obj, jobject qvdclnt)
 {
   qvdclient *qvd;
   jlong qvd_c_pointer;
-  jstring username, password, host;
+  jstring username, password, host, bearer;
   jint port;
-  const char *username_c, *password_c, *host_c;
+  const char *username_c, *password_c, *host_c, *bearer_c;
   int port_c;
 
   qvd_printf("qvd_c_init\n");
+  printf("qvd_c_init\n");
 
   host = (*env)->GetObjectField(env, qvdclnt, host_fid);
-  host_c = (*env)->GetStringUTFChars(env, host, NULL);
-  if (host_c == NULL)
+  if (host == NULL)
+    { // String passed is null
+      host_c = NULL;
+    } else
     {
-      qvd_printf("out of memory allocating host");
-      return 0; /* out of memory */
+      host_c = (*env)->GetStringUTFChars(env, host, NULL);
+      if (host_c == NULL)
+	{
+	  qvd_printf("out of memory allocating host");
+	  return 0; /* out of memory */
+	}
     }
 
   port_c = (*env)->GetIntField(env, qvdclnt, port_fid);
 
   username = (*env)->GetObjectField(env, qvdclnt, username_fid);
-  username_c = (*env)->GetStringUTFChars(env, username, NULL);
-  if (username_c == NULL)
+  if (username == NULL)
+    { // String passed is null
+      username_c = NULL;
+    } else 
     {
-      qvd_printf("out of memory allocating username");
-      (*env)->ReleaseStringUTFChars(env, host, host_c);
-      return 0; /* out of memory */
+      username_c = (*env)->GetStringUTFChars(env, username, NULL);
+      if (username_c == NULL)
+	{
+	  qvd_printf("out of memory allocating username");
+	  (*env)->ReleaseStringUTFChars(env, host, host_c);
+	  return 0; /* out of memory */
+	}
     }
 
   password = (*env)->GetObjectField(env, qvdclnt, password_fid);
-  password_c = (*env)->GetStringUTFChars(env, password, NULL);
-  if (password_c == NULL)
+  if (password == NULL)
+    { // String passed is null
+      password_c = NULL;
+    } else 
     {
-      qvd_printf("out of memory allocating password");
-      (*env)->ReleaseStringUTFChars(env, host, host_c);
-      (*env)->ReleaseStringUTFChars(env, username, username_c);
-      return 0; /* out of memory */
+      password_c = (*env)->GetStringUTFChars(env, password, NULL);
+      if (password_c == NULL)
+	{
+	  qvd_printf("out of memory allocating password");
+	  (*env)->ReleaseStringUTFChars(env, host, host_c);
+	  (*env)->ReleaseStringUTFChars(env, username, username_c);
+	  return 0; /* out of memory */
+	}
     }
 
-  qvd_printf("Calling qvd_init with host=%s,port=%d,username=%s,password=****\n", host_c, port_c, username_c);
-  qvd = qvd_init(host_c, port_c, username_c, password_c);
+  bearer = (*env)->GetObjectField(env, qvdclnt, bearer_fid);
+  if (bearer == NULL)
+    {
+      bearer_c = NULL;
+    } else
+    {
+      bearer_c = (*env)->GetStringUTFChars(env, bearer, NULL);
+      if (bearer_c == NULL)
+	{
+	  printf("bearer is null");
+	  qvd_printf("out of memory allocating bearer");
+	  (*env)->ReleaseStringUTFChars(env, host, host_c);
+	  (*env)->ReleaseStringUTFChars(env, username, username_c);
+	  (*env)->ReleaseStringUTFChars(env, password, password_c);
+	  return 0; /* out of memory */
+	}
+    }
+  qvd_printf("Calling qvd_init with host=%s,port=%d,username=%s,password=****,bearer=%s\n", host_c, port_c, username_c, bearer_c);
+  qvd = qvd_init(host_c, port_c, username_c, password_c, bearer_c);
 
   qvd_c_pointer = _set_c_pointer(qvd);
 

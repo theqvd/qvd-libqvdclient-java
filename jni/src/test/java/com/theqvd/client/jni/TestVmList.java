@@ -30,7 +30,7 @@ import org.junit.Test;
 
 public class TestVmList {
 	QvdclientWrapper qvd;
-	private String user, password, host;
+	private String user, password, host, bearer;
 	private int port;
 	@Before
 	public void setUp() throws Exception {
@@ -47,8 +47,9 @@ public class TestVmList {
 		port = Integer.parseInt(testprops.getProperty("test.port"));
 		user = testprops.getProperty("test.user");
 		password = testprops.getProperty("test.password");
+//		bearer = testprops.getProperty("test.bearer");
 		qvd = new QvdclientWrapper();
-		qvd.qvd_init(host, port, user, password);
+		qvd.qvd_init(host, port, user, password, bearer);
 		qvd.qvd_set_no_cert_check();
 	}
 	

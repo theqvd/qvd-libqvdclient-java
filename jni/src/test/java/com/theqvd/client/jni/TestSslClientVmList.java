@@ -30,7 +30,7 @@ import org.junit.Test;
 
 public class TestSslClientVmList {
 	QvdclientWrapper qvd;
-	private String user, password, host, client_cert, client_key;
+	private String user, password, bearer, host, client_cert, client_key;
 	private int port;
 	@Before
 	public void setUp() throws Exception {
@@ -47,10 +47,11 @@ public class TestSslClientVmList {
 		port = Integer.parseInt(testprops.getProperty("test.sslport"));
 		user = testprops.getProperty("test.ssluser");
 		password = testprops.getProperty("test.sslpassword");
+		bearer = testprops.getProperty("test.sslbearer");
 		client_cert = testprops.getProperty("test.sslcertfile");
 		client_key = testprops.getProperty("test.sslcertkey");
 		qvd = new QvdclientWrapper();
-		qvd.qvd_init(host, port, user, password);
+		qvd.qvd_init(host, port, user, password, bearer);
 	}
 	
 	@After
@@ -74,7 +75,7 @@ public class TestSslClientVmList {
 
 		System.err.println("Cert files are: " + client_cert + " and " + client_key);
 		qvd = new QvdclientWrapper();
-		qvd.qvd_init(host, port, user, password);
+		qvd.qvd_init(host, port, user, password, bearer);
 		qvd.qvd_set_cert_files(client_cert, client_key);
 		qvd.qvd_set_no_cert_check();
 		System.err.println("qvd is "+qvd);

@@ -30,7 +30,7 @@ import org.junit.Test;
 
 public class TestConnectToVM {
 	QvdclientWrapper qvd;
-	private String user, password, host;
+	private String user, password, bearer, host;
         private int port, connect;
 	@Before
 	public void setUp() throws Exception {
@@ -48,9 +48,10 @@ public class TestConnectToVM {
 		port = Integer.parseInt(testprops.getProperty("test.port"));
 		user = testprops.getProperty("test.user");
 		password = testprops.getProperty("test.password");
+//		bearer = testprops.getProperty("test.bearer");
 		connect = Integer.parseInt(testprops.getProperty("test.connect", "0"));
 		qvd = new QvdclientWrapper();
-		qvd.qvd_init(host, port, user, password);
+		qvd.qvd_init(host, port, user, password, bearer);
 		qvd.qvd_set_no_cert_check();
 	}
 

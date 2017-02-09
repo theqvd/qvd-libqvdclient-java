@@ -83,12 +83,12 @@ public class QvdclientWrapper {
 		return qvd_c_get_version_text();
 	}
 
-	public void qvd_init(String host, int port, String username, String password) throws QvdException {
+	public void qvd_init(String host, int port, String username, String password, String bearer) throws QvdException {
 
 		if (qvd_c_pointer != 0) {
 			throw new QvdException("Unexpected that c pointer is not 0 when running init_qvd");
 		}
-		qvdclient = new Qvdclient(username, password, host, port);
+		qvdclient = new Qvdclient(username, password, bearer, host, port);
 		qvd_c_pointer = qvd_c_init(qvdclient);
 		if (qvd_c_pointer == 0) {
 			throw new QvdException("Error in qvd_init a null pointer was returned");

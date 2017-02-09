@@ -27,16 +27,32 @@ package com.theqvd.client.jni;
 public class Qvdclient {
 	private String username;
 	private String password;
+	private String bearer;
 	private String host;
 	private int port;
 	private Vm vmlist[];
 	
+	public Qvdclient(String username, String password, String bearer, String host, int port) {
+		this.username = username;
+		this.password = password;
+		this.bearer = bearer;
+		this.host = host;
+		this.port = port;
+	}
+
 	public Qvdclient(String username, String password, String host, int port) {
 		this.username = username;
 		this.password = password;
 		this.host = host;
 		this.port = port;
 	}
+
+	public Qvdclient(String bearer, String host, int port) {
+		this.bearer = bearer;
+		this.host = host;
+		this.port = port;
+	}
+
 	public String getUsername() {
 		return username;
 	}
@@ -48,6 +64,12 @@ public class Qvdclient {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public String getBearer() {
+		return bearer;
+	}
+	public void setBearer(String bearer) {
+		this.bearer = bearer;
 	}
 	public String getHost() {
 		return host;
@@ -69,7 +91,7 @@ public class Qvdclient {
 	}
 	@Override
 	public String toString() {
-		String s = "host:"+host+";port="+port+";user="+username+";pass=****;vmlist=";
+		String s = "host:"+host+";port="+port+";user="+String.valueOf(username)+";pass=****;bearer="+String.valueOf(bearer)+"vmlist=";
 		int i = 0;
 		for(i=0; i < vmlist.length; ++i) {
 			s+="["+i+"]="+vmlist[i]+";";

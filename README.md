@@ -24,6 +24,17 @@ export ARGS4J=$HOME/.m2/repository/args4j/args4j/2.0.16/args4j-2.0.16.jar
 
 make test
 
+Directly trying the JAR
+-----------------------
+export LD_LIBRARY_PATH=dir1:dir2:dir3
+java -jar target/jqvdclient-1.0.0.jar --help
+
+where:
+
+ * dir1 is the location of the NX libXcomp.so library
+ * dir2 is the location of the libqvdclientwrapper.so library
+ * dir3 is the location of the libqvdclient.so
+
 LICENSE
 =======
 Copyright (C) 2016  theqvd.com trade mark of Qindel Formacion y Servicios, SL 
